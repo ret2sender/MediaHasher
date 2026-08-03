@@ -1,0 +1,211 @@
+# MediaHasher - tag-triggered release workflow.
+#
+# Pushing a tag matching v* builds both release artifacts (Windows zip,
+# macOS dmg), runs the core unit tests first, and attaches the artifacts
+# to a draft GitHub Release for the tag. The workflow wraps the existing
+# packaging entry points (scripts/build.ps1, the root Makefile) rather
+# than reimplementing them, so a CI build and a local release build stay
+# byte-for-byte the same process.
+#
+# The release is created as a draft: review the notes and press Publish
+# on GitHub. Flip 'draft: true' to 'false' below to publish immediately.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  # -------------------------------------------------------------------------
+  # Guard: the tag must agree with ui/VERSION.txt.
+  #
+  # The artifacts are named from ui/VERSION.txt, not from the tag, so a
+  # mismatch (tag v1.1.0 while VERSION.txt says 1.0.0) would publish a
+  # release whose assets claim a different version than the release page.
+  # Failing here, before any expensive build starts, makes the mistake
+  # obvious and cheap.
+  # -------------------------------------------------------------------------
+  check-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compare tag against ui/VERSION.txt
+        run: |
+          tag_version="${GITHUB_REF_NAME#v}"
+          file_version="$(tr -d '[:space:]' < ui/VERSION.txt)"
+          echo "tag       : ${GITHUB_REF_NAME} (version ${tag_version})"
+          echo "VERSION.txt: ${file_version}"
+          if [ "${tag_version}" != "${file_version}" ]; then
+            echo "error: tag version does not match ui/VERSION.txt." >&2
+            echo "       Bump ui/VERSION.txt (single source of truth)," >&2
+            echo "       commit, then re-create the tag on that commit." >&2
+            exit 1
+          fi
+
+  # -------------------------------------------------------------------------
+  # Windows: Conan deps, MSVC, then scripts/build.ps1 does the rest.
+  # -------------------------------------------------------------------------
+  build-windows:
+    needs: check-version
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # ui/CMakeLists.txt requires CMake >= 4.1; the runner image's bundled
+      # CMake trails releases, so a known-good CMake is installed
+      # explicitly instead of trusting the image.
+      - name: Install CMake
+        uses: lukka/get-cmake@latest
+
+      # 6.11.1 pinned on both platforms: this also closes the known
+      # macOS 6.11.1 / Windows 6.11.0 skew for release builds.
+      #
+      # aqtsource: Qt changed the Windows download-repo folder layout with
+      # 6.11 and the released aqtinstall (3.3.0) predates that, so the
+      # default install fails with "Failed to locate XML data for Qt
+      # version '6.11.1'". The fix is merged upstream as PR 1000 but not
+      # yet on PyPI; install from that branch until it ships, then delete
+      # this line (see miurahr/aqtinstall issue 959).
+      - name: Install Qt 6.11.1
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.11.1'
+          arch: 'win64_msvc2022_64'
+          cache: true
+          aqtsource: 'git+https://github.com/miurahr/aqtinstall.git@refs/pull/1000/head'
+
+      - name: Install Conan
+        run: |
+          pip install conan
+          conan profile detect --force
+
+      # Conan compiles anything conancenter has no prebuilt binary for
+      # (--build=missing); caching the package store keeps that a
+      # first-run cost instead of a per-release cost.
+      - name: Cache Conan packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.conan2/p
+          key: conan-windows-${{ hashFiles('ui/conanfile.txt', 'MediaHash/conanfile.txt') }}
+          restore-keys: |
+            conan-windows-
+
+      # Core tests gate the release: a failing hash implementation must
+      # never ship. This builds the core standalone, mirroring the local
+      # 'build.ps1 test' flow.
+      #
+      # No -Generator is passed here or below: Conan's generated toolchain
+      # targets the Visual Studio generator (it bakes in the x64 platform
+      # and an MSVC toolset), and forcing Ninja on top of it fails with
+      # "Ninja does not support platform specification". build.ps1's
+      # fallback to CMake's default (Visual Studio) matches both the
+      # toolchain and the local release flow, and the VS generator
+      # locates MSVC itself, so no Developer Command Prompt setup is
+      # needed either.
+      - name: Run core unit tests
+        shell: pwsh
+        run: .\scripts\build.ps1 test -BuildType Release
+
+      - name: Build and package zip
+        shell: pwsh
+        run: .\scripts\build.ps1 zip -BuildType Release -QtPrefix "$env:QT_ROOT_DIR"
+
+      - name: Upload zip artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-zip
+          path: dist/MediaHasher-*-windows-x64.zip
+          if-no-files-found: error
+
+  # -------------------------------------------------------------------------
+  # macOS: Homebrew deps, then the Makefile drives the same flow as local.
+  # -------------------------------------------------------------------------
+  build-macos:
+    needs: check-version
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # The dmg name embeds `uname -m` and the published artifact promises
+      # arm64, so a silent fallback to an Intel runner would ship a
+      # misnamed (and differently built) image. Fail loudly instead.
+      - name: Verify Apple Silicon runner
+        run: |
+          arch="$(uname -m)"
+          echo "Runner architecture: ${arch}"
+          if [ "${arch}" != "arm64" ]; then
+            echo "error: expected an arm64 runner; got ${arch}." >&2
+            echo "       The dmg would be misnamed. Pin an Apple Silicon" >&2
+            echo "       runner label or update the artifact naming." >&2
+            exit 1
+          fi
+
+      - name: Install CMake
+        uses: lukka/get-cmake@latest
+
+      - name: Install Qt 6.11.1
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.11.1'
+          cache: true
+
+      # openssl@3 is usually preinstalled on the runner image but is
+      # listed anyway: 'brew install' on an installed formula is a no-op,
+      # and omitting it would make this step break the day the image
+      # drops it.
+      - name: Install Homebrew dependencies
+        run: brew install openssl@3 blake3 xxhash yaml-cpp
+
+      # Core tests gate the release, same as on Windows. The Makefile's
+      # 'test' target builds the core standalone against Homebrew deps.
+      - name: Run core unit tests
+        run: make BUILD_TYPE=Release test
+
+      # QT_PREFIX is passed explicitly rather than letting the Makefile
+      # probe: the runner has no ~/Qt install and 'brew --prefix qt'
+      # would either miss or find a different Qt than the pinned 6.11.1.
+      - name: Build and package dmg
+        run: make BUILD_TYPE=Release QT_PREFIX="$QT_ROOT_DIR" dmg
+
+      - name: Upload dmg artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-dmg
+          path: build/app-release/MediaHasher-*-macos-*.dmg
+          if-no-files-found: error
+
+  # -------------------------------------------------------------------------
+  # Publish: one draft release carrying both artifacts.
+  #
+  # A separate job (rather than each build uploading directly) so the
+  # release only ever appears with both platforms present - a Windows
+  # failure cannot produce a macOS-only release.
+  # -------------------------------------------------------------------------
+  publish:
+    needs: [build-windows, build-macos]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+          merge-multiple: true
+
+      - name: List assets
+        run: ls -l release-assets
+
+      - name: Create draft GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: MediaHasher ${{ github.ref_name }}
+          draft: true
+          files: release-assets/*
+          fail_on_unmatched_files: true

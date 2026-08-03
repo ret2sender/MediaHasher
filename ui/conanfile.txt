@@ -1,0 +1,9 @@
+[requires]
+openssl/3.3.2
+yaml-cpp/0.8.0
+blake3/1.8.5
+xxhash/0.8.3
+
+[generators]
+CMakeDeps
+CMakeToolchain

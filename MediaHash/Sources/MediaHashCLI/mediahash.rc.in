@@ -1,0 +1,47 @@
+// MediaHash - Windows resource script template for the mediahash CLI.
+//
+// Copyright (c) 2026 Etienne Fleurant
+// SPDX-License-Identifier: MIT
+//
+// Part of the MediaHash core library, released under the MIT License.
+// See MediaHash/LICENSE for the full license text.
+//
+// Configured by CMake into the build directory; the version numbers come
+// from the VERSION argument of project() in MediaHash/CMakeLists.txt -
+// the core library version, independent of the application version. Do
+// not edit the generated mediahash.rc - edit this template instead.
+//
+// ASCII only: rc.exe interprets the file in the ANSI codepage by default,
+// so non-ASCII characters here would be mangled silently.
+
+#include <winver.h>
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION     @PROJECT_VERSION_MAJOR@,@PROJECT_VERSION_MINOR@,@PROJECT_VERSION_PATCH@,0
+PRODUCTVERSION  @PROJECT_VERSION_MAJOR@,@PROJECT_VERSION_MINOR@,@PROJECT_VERSION_PATCH@,0
+FILEFLAGSMASK   VS_FFI_FILEFLAGSMASK
+FILEFLAGS       0x0L
+FILEOS          VOS_NT_WINDOWS32
+FILETYPE        VFT_APP
+FILESUBTYPE     VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        // 040904b0 = U.S. English, Unicode codepage.
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "CompanyName",      "Etienne Fleurant"
+            VALUE "FileDescription",  "mediahash - MediaHash core library CLI"
+            VALUE "FileVersion",      "@PROJECT_VERSION@"
+            VALUE "InternalName",     "mediahash"
+            VALUE "LegalCopyright",   "Copyright (c) 2026 Etienne Fleurant. MIT License."
+            VALUE "OriginalFilename", "mediahash.exe"
+            VALUE "ProductName",      "MediaHash"
+            VALUE "ProductVersion",   "@PROJECT_VERSION@"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END

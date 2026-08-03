@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Breeze caption glyph: X, drawn on a 12-grid. Rendering is
+     fill PLUS a 1-unit stroke over a thin skeleton polygon; the stroke
+     attributes are load-bearing and must not be removed. Stroke width
+     normalized to exactly 1 (was 0.98317, drift under 0.017). All subpaths
+     closed so corners get miter joins instead of overlapping square
+     caps at the path seam; vertex set verified symmetric under both axis
+     mirrors.
+     Derived from KDE breeze-icons (LGPL-3.0-or-later). -->
+<svg width="12" height="12" version="1.1" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+ <path d="M2.0652 1.6952 L1.6953 2.0651 L5.6302 6 L1.6953 9.9349 L2.0652 10.3049 L6 6.37 L9.935 10.3049 L10.3049 9.9349 L6.37 6 L10.3049 2.0651 L9.935 1.6952 L6 5.63 Z" fill="#e2e2e2" stroke="#e2e2e2" stroke-width="1"/>
+</svg>

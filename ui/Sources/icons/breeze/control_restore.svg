@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Breeze caption glyph: hollow diamond, drawn on a 12-grid. Rendering
+     is fill PLUS a 1-unit stroke over a thin skeleton ring; the stroke
+     attributes are load-bearing and must not be removed. Canonicalized
+     to exact 4-fold symmetry about center (6,6), half-diagonals 5.0462
+     outer / 4.1204 inner. The inner ring is wound opposite the outer
+     AND fill-rule is evenodd: either alone keeps the hole open, so the
+     glyph stays hollow even if a future edit renumbers one ring.
+     Stroke width normalized to exactly 1 (was 0.99534).
+     Derived from KDE breeze-icons (LGPL-3.0-or-later). -->
+<svg width="12" height="12" version="1.1" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+ <path fill-rule="evenodd" d="M6 0.9538 L11.0462 6 L6 11.0462 L0.9538 6 Z M6 1.8796 L1.8796 6 L6 10.1204 L10.1204 6 Z" fill="#e2e2e2" stroke="#e2e2e2" stroke-width="1"/>
+</svg>
