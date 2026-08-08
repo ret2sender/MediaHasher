@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Breeze caption glyph: down chevron, drawn on a 12-grid. Rendering is
-     fill PLUS a 1-unit stroke over a thin skeleton polygon; the stroke
-     attributes are load-bearing and must not be removed. Stroke width
-     normalized to exactly 1 (was 1.0025, drift under 0.017). All subpaths
-     closed so corners get miter joins instead of overlapping square
-     caps at the path seam; outline preserved (arm slope 1.0144 from the fit-to-size
-     stretch is intentional and kept).
-     Derived from KDE breeze-icons (LGPL-3.0-or-later). -->
+<!-- Derived from KDE breeze-icons (LGPL-3.0-or-later). -->
 <svg width="12" height="12" version="1.1" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
  <path d="M1.3999 3.214 L0.9539 3.6664 L6 8.7855 L11.0465 3.6664 L10.6005 3.214 L6 7.8808 Z" fill="#e2e2e2" stroke="#e2e2e2" stroke-width="1"/>
 </svg>

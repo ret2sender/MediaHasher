@@ -562,7 +562,7 @@ Window {
                             Layout.alignment: Qt.AlignHCenter
                             iconWidth: 181
                             iconHeight: 32
-                            source: "../../images/mediahasher_logo.svg"
+                            source: "../../images/mediahasher_text.svg"
                         }
 
                         // Version line. Clicking copies the full build

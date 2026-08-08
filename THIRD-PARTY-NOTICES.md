@@ -1,8 +1,8 @@
 # Third-Party Notices
 
 MediaHasher is distributed as a whole under the **GNU General Public License
-v3.0** (see `LICENSE`). The **MediaHash core library** (`MediaHash/`) is
-additionally available on its own under the **MIT License** (see
+v3.0 or later** (see `LICENSE`). The **MediaHash core library** (`MediaHash/`)
+is additionally available on its own under the **MIT License** (see
 `MediaHash/LICENSE`).
 
 This file lists the third-party components bundled with or linked by the
@@ -30,7 +30,7 @@ The full license text for each font ships alongside the font files in
 `ui/Sources/fonts/`.
 
 - **Inter** - `ui/Sources/fonts/Inter-*.ttf`
-  Copyright 2020 The Inter Project Authors (https://github.com/rsms/inter)
+  Copyright (c) 2016 The Inter Project Authors (https://github.com/rsms/inter)
   SIL Open Font License, Version 1.1 - see `ui/Sources/fonts/Inter_OFL.txt`.
 
 - **JetBrains Mono** - `ui/Sources/fonts/JetBrainsMono-*.ttf`
@@ -53,6 +53,20 @@ The full license text for each font ships alongside the font files in
   Modifications: redrawn as vector paths, rescaled to a uniform 24x24 canvas,
   recolored to the application palette, and converted from stroked outlines to
   filled paths.
+
+### Logo artwork
+
+The MediaHasher logo - both the "MH" glyph mark and the "MediaHasher"
+wordmark - is a vector outline set in **Akronim**
+(Copyright (c) 2012 Grzegorz Klimczewski, Fonty.PL, www.fonty.pl;
+https://fonts.google.com/specimen/Akronim), licensed under the SIL Open Font
+License, Version 1.1. The OFL permits creating logos and artwork with a
+licensed font and does not extend its terms to the rendered outlines, so the
+logo artwork itself is covered by the project license and carries no
+third-party obligation. This entry is provenance documentation, not a license
+requirement. The font itself is not bundled with MediaHasher.
+
+### Original assets
 
 The window-control glyphs in `ui/Sources/icons/windows/` are original artwork
 (generic close/minimize shapes) and are covered by the project license.

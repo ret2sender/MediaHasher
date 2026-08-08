@@ -74,7 +74,7 @@ Item {
                 Layout.leftMargin: 102
                 iconHeight: 38
                 iconWidth: 215
-                source: "../../images/mediahasher_logo.svg"
+                source: "../../images/mediahasher_text.svg"
             }
 
             Button {
