@@ -6,8 +6,10 @@ is additionally available on its own under the **MIT License** (see
 `MediaHash/LICENSE`).
 
 This file lists the third-party components bundled with or linked by the
-project, grouped by which component depends on them. Every listed license is
-compatible with GPLv3. The core-library section is kept self-contained so it
+project, grouped by which component depends on them. Every listed open-source
+license is compatible with GPLv3; the one proprietary item (Segoe Fluent
+Icons, below) is not bundled and is called out separately. The core-library
+section is kept self-contained so it
 can move with `MediaHash/` if that library is ever published separately.
 
 ---
@@ -54,6 +56,33 @@ The full license text for each font ships alongside the font files in
   recolored to the application palette, and converted from stroked outlines to
   filled paths.
 
+- **KDE Breeze window decoration (transcribed)** -
+  `ui/Sources/icons/breeze/control_*.svg`
+  The caption glyphs (close, minimize, maximize, restore, and their `_hover`
+  variants) are a one-to-one transcription of the geometry the Breeze window
+  decoration paints in `kdecoration/breezebutton.cpp`
+  (https://invent.kde.org/plasma/breeze). Copyright the KDE Breeze authors.
+  GNU General Public License, Version 2.0 or later - used under the
+  "or later" option, which is compatible with this project's GPLv3.
+  Modifications: expressed as SVG stroke primitives on an 18x18 canvas;
+  stroke color set to the application palette (rest and hover variants).
+  These files replace an earlier set derived from the breeze-icons theme
+  (LGPL-3.0-or-later), which is no longer used.
+
+- **Segoe Fluent Icons (window-control glyphs)** -
+  `ui/Sources/icons/windows/control_*.svg`
+  These files reproduce the window-chrome glyphs of Microsoft's
+  **Segoe Fluent Icons** (Copyright Microsoft Corporation,
+  https://learn.microsoft.com/en-us/windows/apps/design/style/segoe-fluent-icons-font)
+  as vector outlines, so that the custom title bar matches native Windows
+  chrome. The font itself is not bundled with MediaHasher; the shipped SVG
+  files contain only the glyph geometry (minimize bar, maximize square,
+  restore squares, close cross) re-expressed as project SVG paths. The
+  Windows profile that references them is only selected when running on
+  Windows; other platforms use `default/` or `breeze/`. Segoe Fluent Icons
+  is distributed by Microsoft under its own license terms rather than an
+  open-source license; this entry documents provenance.
+
 ### Logo artwork
 
 The MediaHasher logo - both the "MH" glyph mark and the "MediaHasher"
@@ -68,8 +97,9 @@ requirement. The font itself is not bundled with MediaHasher.
 
 ### Original assets
 
-The window-control glyphs in `ui/Sources/icons/windows/` are original artwork
-(generic close/minimize shapes) and are covered by the project license.
+The window-control glyphs in `ui/Sources/icons/default/` are original artwork
+(generic close/minimize/maximize/restore shapes) and are covered by the
+project license.
 
 ---
 
@@ -93,5 +123,6 @@ own notices file.
 - BSD 2-Clause - https://opensource.org/license/bsd-2-clause
 - CC0-1.0 - https://creativecommons.org/publicdomain/zero/1.0/legalcode
 - OFL-1.1 - https://openfontlicense.org
+- GPL-2.0-or-later - https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 - GPL-3.0 - see `LICENSE`
 - MIT - see `MediaHash/LICENSE`
