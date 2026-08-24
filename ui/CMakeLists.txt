@@ -203,7 +203,7 @@ endif()
 # the per-directory qmldir files, so none are hand-written anymore.
 # ---------------------------------------------------------------------------
 set_source_files_properties(
-        Sources/qml/Theme.qml
+        Sources/qml/theme/Theme.qml
         Sources/qml/components/TitleBarStyle.qml
         PROPERTIES QT_QML_SINGLETON_TYPE TRUE
 )
@@ -216,7 +216,7 @@ qt_add_qml_module(MediaHasher
         # never drift.
         VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
         QML_FILES
-        Sources/qml/Theme.qml
+        Sources/qml/theme/Theme.qml
         Sources/qml/views/MainWindow.qml
         Sources/qml/components/AppIcon.qml
         Sources/qml/components/AutoHideScrollBar.qml
@@ -238,6 +238,10 @@ qt_add_qml_module(MediaHasher
         Sources/icons/breeze/control_maximize.svg
         Sources/icons/breeze/control_minimize.svg
         Sources/icons/breeze/control_restore.svg
+        Sources/icons/breeze/control_close_hover.svg
+        Sources/icons/breeze/control_maximize_hover.svg
+        Sources/icons/breeze/control_minimize_hover.svg
+        Sources/icons/breeze/control_restore_hover.svg
         Sources/icons/default/control_close.svg
         Sources/icons/default/control_maximize.svg
         Sources/icons/default/control_minimize.svg

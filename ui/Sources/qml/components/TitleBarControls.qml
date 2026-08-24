@@ -36,17 +36,27 @@ import com.mediahasher.app
     instead.
 
     All per-platform values come from TitleBarStyle.
+
+    The root is a Control rather than an Item so the profile's padding is
+    expressed through the QML-native contract: the row of buttons is the
+    contentItem, and Control derives implicit size from content plus
+    padding, so the parent layout sees one box that already includes the
+    gap. (An Item with hand-computed implicit size and anchor margins on
+    the row gives the same result with two places to keep in sync.)
 */
-Item {
+Control {
     id: root
 
-    implicitHeight: controlsRow.implicitHeight
-    implicitWidth: controlsRow.implicitWidth
+    leftPadding: TitleBarStyle.paddingLeft
+    rightPadding: TitleBarStyle.paddingRight
+    topPadding: TitleBarStyle.paddingTop
+    bottomPadding: TitleBarStyle.paddingBottom
 
     component CaptionButton: Button {
         id: captionButton
 
         required property url iconSource
+        required property url hoverIconSource
         required property real iconWidth
         required property real iconHeight
         required property color restColor
@@ -100,7 +110,12 @@ Item {
             iconHeight: captionButton.iconHeight
             iconWidth: captionButton.iconWidth
             opacity: captionButton.Window.active ? 1.0 : TitleBarStyle.inactiveOpacity
-            source: captionButton.iconSource
+
+            // Profiles that do not invert on hover bind both to the same
+            // asset, so the swap is a no-op there.
+            source: captionButton.hovered
+                ? captionButton.hoverIconSource
+                : captionButton.iconSource
 
             // Dim the caption glyphs while the window is unfocused.
             Behavior on opacity {
@@ -109,7 +124,7 @@ Item {
         }
     }
 
-    RowLayout {
+    contentItem: RowLayout {
         id: controlsRow
 
         spacing: TitleBarStyle.spacing
@@ -119,6 +134,7 @@ Item {
 
         CaptionButton {
             iconSource: TitleBarStyle.minimizeIcon
+            hoverIconSource: TitleBarStyle.minimizeHoverIcon
             iconWidth: TitleBarStyle.iconWidth
             iconHeight: TitleBarStyle.iconHeight
             restColor: TitleBarStyle.controlBackground
@@ -143,6 +159,9 @@ Item {
             iconSource: maximizeButton.windowMaximized
                 ? TitleBarStyle.restoreIcon
                 : TitleBarStyle.maximizeIcon
+            hoverIconSource: maximizeButton.windowMaximized
+                ? TitleBarStyle.restoreHoverIcon
+                : TitleBarStyle.maximizeHoverIcon
             iconWidth: TitleBarStyle.iconWidth
             iconHeight: TitleBarStyle.iconHeight
             restColor: TitleBarStyle.controlBackground
@@ -155,6 +174,7 @@ Item {
 
         CaptionButton {
             iconSource: TitleBarStyle.closeIcon
+            hoverIconSource: TitleBarStyle.closeHoverIcon
             iconWidth: TitleBarStyle.iconWidth
             iconHeight: TitleBarStyle.iconHeight
             restColor: TitleBarStyle.closeBackground

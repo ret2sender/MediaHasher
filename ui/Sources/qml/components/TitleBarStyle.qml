@@ -40,8 +40,9 @@ import com.mediahasher.app
     macOS never reaches here; the parent uses the native traffic lights.
 
     Kept deliberately in sync with rawform's copy of this file. The only
-    intended divergences are the import URI and the showMaximize default
-    (this window is fixed-size).
+    intended divergences are the import URI, the showMaximize default
+    (this window is fixed-size), and the per-profile padding* values,
+    which are tuned against each app's own title bar height.
 */
 QtObject {
     id: style
@@ -59,6 +60,15 @@ QtObject {
         property url restoreIcon: Qt.resolvedUrl("../../icons/default/control_restore.svg")
         property url closeIcon: Qt.resolvedUrl("../../icons/default/control_close.svg")
 
+        // Hover glyphs. Bound to the rest glyph by default, so profiles that
+        // do not invert on hover get a no-op swap. The hover color lives in
+        // the artwork rather than a color knob: AppIcon stays free of any
+        // colorization stage and the Windows profile stays behavior-identical.
+        property url minimizeHoverIcon: minimizeIcon
+        property url maximizeHoverIcon: maximizeIcon
+        property url restoreHoverIcon: restoreIcon
+        property url closeHoverIcon: closeIcon
+
         property real iconWidth: 10
         property real iconHeight: 10
 
@@ -66,6 +76,16 @@ QtObject {
         property real buttonWidth: 32
         property real buttonHeight: 40
         property real spacing: 0
+
+        // Padding of the whole caption chunk (feeds Control's *Padding on
+        // TitleBarControls). Moves the chunk as one box; button hit areas
+        // and glyph placement inside buttons are unaffected. Sides are not
+        // mirrored by controlsOnLeft: a left-side profile sets paddingLeft
+        // itself.
+        property real paddingLeft: 0
+        property real paddingRight: 0
+        property real paddingTop: 0
+        property real paddingBottom: 0
 
         // Applied to whichever top corner faces the window edge. Left at 0
         // by default: a rounded corner stays rounded when the compositor
@@ -101,7 +121,7 @@ QtObject {
         // Inactive-window dimming and animation.
         property real inactiveOpacity: 0.5
         property int hoverDuration: 200
-        property int dimDuration: 150
+        property int dimDuration: 200
 
         // false -> right side, reading [minimize][close]
         // true  -> left side,  reading [close][minimize]
@@ -118,7 +138,10 @@ QtObject {
     // ==================================================================
     // Variants
     // ==================================================================
-    readonly property Profile defaultProfile: Profile {}
+    readonly property Profile defaultProfile: Profile {
+        paddingBottom: 16
+        paddingRight: 1
+    }
 
     readonly property Profile windowsProfile: Profile {
         minimizeIcon: Qt.resolvedUrl("../../icons/windows/control_minimize.svg")
@@ -134,26 +157,48 @@ QtObject {
         closeHover: Theme.windowsCloseHover
         inactiveOpacity: 0.4
 
+        paddingBottom: 16
+
         // Full-cell hover fill, the stock Win11 caption treatment; the
         // circular plate is a Linux affordance.
         backgroundSize: 0
+
+        hoverDuration: 200
+        dimDuration: 150
     }
 
-    // Breeze differs from the default only in artwork (chevrons rather
-    // than bar-and-square) and in sizing.
+    // Breeze: a transcription of what the Breeze decoration itself paints
+    // (18x18 box, 1.01px pen). The glyph inverts to dark on hover over a
+    // near-white plate, so each button carries a second, hover-only asset.
+    // iconWidth/iconHeight equal backgroundSize so the icon box is the
+    // plate and every line lands where Breeze's pen puts it.
     readonly property Profile breezeProfile: Profile {
         minimizeIcon: Qt.resolvedUrl("../../icons/breeze/control_minimize.svg")
         maximizeIcon: Qt.resolvedUrl("../../icons/breeze/control_maximize.svg")
         restoreIcon: Qt.resolvedUrl("../../icons/breeze/control_restore.svg")
         closeIcon: Qt.resolvedUrl("../../icons/breeze/control_close.svg")
 
-        iconHeight: 12
-        iconWidth: 12
+        minimizeHoverIcon: Qt.resolvedUrl("../../icons/breeze/control_minimize_hover.svg")
+        maximizeHoverIcon: Qt.resolvedUrl("../../icons/breeze/control_maximize_hover.svg")
+        restoreHoverIcon: Qt.resolvedUrl("../../icons/breeze/control_restore_hover.svg")
+        closeHoverIcon: Qt.resolvedUrl("../../icons/breeze/control_close_hover.svg")
+
+        iconHeight: 18
+        iconWidth: 18
 
         buttonWidth: 26
         buttonHeight: 30
 
-        backgroundSize: 20
+        controlHover: Theme.breezeControlHover
+        closeHover: Theme.breezeCloseHover
+
+        paddingRight: 4
+        paddingBottom: 16
+
+        backgroundSize: 18
+
+        hoverDuration: 0
+        dimDuration: 0
     }
 
     // ==================================================================
@@ -218,6 +263,11 @@ QtObject {
     readonly property url restoreIcon: style.profile.restoreIcon
     readonly property url closeIcon: style.profile.closeIcon
 
+    readonly property url minimizeHoverIcon: style.profile.minimizeHoverIcon
+    readonly property url maximizeHoverIcon: style.profile.maximizeHoverIcon
+    readonly property url restoreHoverIcon: style.profile.restoreHoverIcon
+    readonly property url closeHoverIcon: style.profile.closeHoverIcon
+
     readonly property real iconWidth: style.profile.iconWidth
     readonly property real iconHeight: style.profile.iconHeight
 
@@ -225,6 +275,11 @@ QtObject {
     readonly property real buttonHeight: style.profile.buttonHeight
     readonly property real spacing: style.profile.spacing
     readonly property real closeCornerRadius: style.profile.closeCornerRadius
+
+    readonly property real paddingLeft: style.profile.paddingLeft
+    readonly property real paddingRight: style.profile.paddingRight
+    readonly property real paddingTop: style.profile.paddingTop
+    readonly property real paddingBottom: style.profile.paddingBottom
 
     readonly property color controlBackground: style.profile.controlBackground
     readonly property color closeBackground: style.profile.closeBackground

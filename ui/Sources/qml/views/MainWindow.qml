@@ -163,6 +163,8 @@ ApplicationWindow {
         anchors.topMargin: -applicationWindow.titleBarOffset
         color: Theme.windowBackground
         radius: Qt.platform.os === "osx" ? 0 : 8
+        border.color: Theme.windowOutline
+        border.width: Qt.platform.os === "osx" ? 0 : 1
 
         ColumnLayout {
             id: mainColumn

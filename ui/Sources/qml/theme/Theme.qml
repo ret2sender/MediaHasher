@@ -35,11 +35,11 @@ QtObject {
     // Fonts
     // -------------------------------------------------------------------------
     readonly property FontLoader interLoader: FontLoader {
-        source: "../fonts/Inter-VariableFont_opsz,wght.ttf"
+        source: "../../fonts/Inter-VariableFont_opsz,wght.ttf"
     }
 
     readonly property FontLoader jetbrainsMonoLoader: FontLoader {
-        source: "../fonts/JetBrainsMono-VariableFont_wght.ttf"
+        source: "../../fonts/JetBrainsMono-VariableFont_wght.ttf"
     }
 
     // Font family names for font.family bindings.
@@ -54,6 +54,9 @@ QtObject {
     readonly property color accentDeep: "#9641FF"    // worker progress fill, OK button
     readonly property color accentSoft: "#BDB2FF"    // lavender: focus strokes, highlights
     readonly property color accentHover: "#D4B8FF"   // menu-label hover tint
+
+    // Lines
+    readonly property color windowOutline: "#464A49"
 
     // Surfaces
     readonly property color windowBackground: "#292929"
@@ -83,6 +86,12 @@ QtObject {
     // Title bar controls - Windows
     readonly property color windowsControlHover: "#626262"
     readonly property color windowsCloseHover: "#C42B1C"
+
+    // Title bar controls - Breeze. Sampled from a Plasma 6 Breeze decoration
+    // on a dark color scheme. The dark hover glyph is baked into the SVG
+    // assets (icons/breeze/control_*_hover.svg), not a token here.
+    readonly property color breezeControlHover: "#FCFCFC"  // minimize/maximize hover plate
+    readonly property color breezeCloseHover: "#FF98A2"    // close hover plate
 
     // Jobs Log entry colors
     readonly property color logComplete: "lawngreen"
