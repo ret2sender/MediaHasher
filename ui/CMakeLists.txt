@@ -259,7 +259,7 @@ qt_add_qml_module(MediaHasher
         Sources/icons/windows/control_maximize.svg
         Sources/icons/windows/control_minimize.svg
         Sources/icons/windows/control_restore.svg
-        Sources/images/mediahasher_text.svg
+        Sources/images/mediahasher_logo.svg
 )
 
 # ---------------------------------------------------------------------------
